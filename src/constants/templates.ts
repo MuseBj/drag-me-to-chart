@@ -128,7 +128,7 @@ export const PRESET_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'devops-infra',
     title: 'Cloud Infrastructure & SRE Telemetry',
     description: 'Server cluster latency, CPU load heatmaps, error budgets, and partition usage',
-    themeId: 'emerald-matrix',
+    themeId: 'corporate-blue',
     domain: 'devops',
     columns: 12,
     updatedAt: new Date().toISOString(),

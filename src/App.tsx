@@ -11,7 +11,7 @@ import { ExportModal } from './components/layout/ExportModal';
 import { copyDashboardImageToClipboard } from './utils/exportHelpers';
 
 export function App() {
-  const initialTemplate = PRESET_TEMPLATES.medical || PRESET_TEMPLATES.saas;
+  const initialTemplate = PRESET_TEMPLATES.devops || PRESET_TEMPLATES.saas;
   const initialTheme =
     COLOR_THEMES.find((t) => t.id === initialTemplate.themeId) || COLOR_THEMES[0];
 
