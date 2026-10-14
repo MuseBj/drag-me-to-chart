@@ -191,6 +191,20 @@ export const Navbar = ({
                   Rose Charts, GMV Bars, Scatter Cohorts
                 </span>
               </button>
+              <button
+                onClick={() => {
+                  onSelectTemplate('fitness');
+                  setShowTemplateMenu(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/10 transition-colors flex flex-col"
+              >
+                <span className="font-semibold" style={{ color: currentTheme.textPrimary }}>
+                  Health & Workout Performance
+                </span>
+                <span className="text-[11px] opacity-70" style={{ color: currentTheme.textSecondary }}>
+                  Weight, Steps, Blood Pressure & Body Fat
+                </span>
+              </button>
               <div className="border-t my-1" style={{ borderColor: currentTheme.cardBorder }} />
               <button
                 onClick={() => {

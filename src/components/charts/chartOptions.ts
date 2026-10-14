@@ -73,8 +73,11 @@ export const buildEChartsOption = (
               scaleSize: 8,
             },
             data:
-              (widget.id.includes('email') || widget.domain === 'medical-sre') &&
-              MOCK_DATA.medicalEmailAuth
+              (widget.id.includes('workout') || widget.domain === 'healthcare') &&
+              MOCK_DATA.healthWorkoutSplit
+                ? MOCK_DATA.healthWorkoutSplit
+                : (widget.id.includes('email') || widget.domain === 'medical-sre') &&
+                  MOCK_DATA.medicalEmailAuth
                 ? MOCK_DATA.medicalEmailAuth
                 : MOCK_DATA.donut,
           },
@@ -157,6 +160,92 @@ export const buildEChartsOption = (
     }
 
     case 'area': {
+      const isHealth =
+        widget.id.includes('weight') ||
+        widget.id.includes('bodyfat') ||
+        (widget.domain === 'healthcare' && !widget.id.includes('arr'));
+
+      if (isHealth && MOCK_DATA.healthWeightBodyFat) {
+        return {
+          backgroundColor: 'transparent',
+          color: colors,
+          tooltip: {
+            ...baseTooltip,
+            trigger: 'axis',
+          },
+          grid: baseGrid,
+          legend: {
+            show: widget.showLegend !== false,
+            top: 0,
+            right: 10,
+            textStyle: { color: textSecondary, fontSize: 11 },
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: MOCK_DATA.healthWeightBodyFat.weeks,
+            axisLine: { lineStyle: { color: gridLineColor } },
+            axisLabel: { color: textSecondary, fontSize: 11 },
+          },
+          yAxis: [
+            {
+              type: 'value',
+              name: 'lbs',
+              min: 172,
+              max: 188,
+              nameTextStyle: { color: textSecondary, fontSize: 10 },
+              splitLine: { lineStyle: { color: gridLineColor, type: 'dashed' } },
+              axisLabel: { color: textSecondary, fontSize: 11 },
+            },
+            {
+              type: 'value',
+              name: 'BF %',
+              min: 16,
+              max: 24,
+              nameTextStyle: { color: textSecondary, fontSize: 10 },
+              splitLine: { show: false },
+              axisLabel: { color: textSecondary, fontSize: 11, formatter: '{value}%' },
+            },
+          ],
+          series: [
+            {
+              name: 'Body Weight (lbs)',
+              type: 'line',
+              yAxisIndex: 0,
+              smooth: widget.isSmooth ?? true,
+              symbol: 'circle',
+              symbolSize: 6,
+              lineStyle: { width: 3, color: colors[0] },
+              itemStyle: { color: colors[0] },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: `${colors[0]}70` },
+                  { offset: 1, color: `${colors[0]}02` },
+                ]),
+              },
+              data: MOCK_DATA.healthWeightBodyFat.weight,
+            },
+            {
+              name: 'Body Fat %',
+              type: 'line',
+              yAxisIndex: 1,
+              smooth: widget.isSmooth ?? true,
+              symbol: 'circle',
+              symbolSize: 6,
+              lineStyle: { width: 2.5, color: colors[1] || '#f59e0b' },
+              itemStyle: { color: colors[1] || '#f59e0b' },
+              areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: `${colors[1] || '#f59e0b'}40` },
+                  { offset: 1, color: `${colors[1] || '#f59e0b'}00` },
+                ]),
+              },
+              data: MOCK_DATA.healthWeightBodyFat.bodyFat,
+            },
+          ],
+        };
+      }
+
       return {
         backgroundColor: 'transparent',
         color: colors,
@@ -220,6 +309,83 @@ export const buildEChartsOption = (
     }
 
     case 'line': {
+      const isHealthBp =
+        widget.id.includes('bp') ||
+        widget.id.includes('blood-pressure') ||
+        widget.targetMetricName?.toLowerCase().includes('systolic') ||
+        widget.title.toLowerCase().includes('blood pressure');
+
+      if (isHealthBp && MOCK_DATA.healthBloodPressure) {
+        return {
+          backgroundColor: 'transparent',
+          color: colors,
+          tooltip: {
+            ...baseTooltip,
+            trigger: 'axis',
+          },
+          legend: {
+            show: widget.showLegend !== false,
+            top: 0,
+            right: 10,
+            textStyle: { color: textSecondary, fontSize: 11 },
+          },
+          grid: baseGrid,
+          xAxis: {
+            type: 'category',
+            data: MOCK_DATA.healthBloodPressure.days,
+            axisLine: { lineStyle: { color: gridLineColor } },
+            axisLabel: { color: textSecondary, fontSize: 11 },
+          },
+          yAxis: {
+            type: 'value',
+            name: 'mmHg',
+            min: 60,
+            max: 140,
+            nameTextStyle: { color: textSecondary, fontSize: 10 },
+            splitLine: { lineStyle: { color: gridLineColor, type: 'dashed' } },
+            axisLabel: { color: textSecondary, fontSize: 11 },
+          },
+          series: [
+            {
+              name: 'Systolic (mmHg)',
+              type: 'line',
+              smooth: widget.isSmooth ?? true,
+              symbol: 'circle',
+              symbolSize: 6,
+              lineStyle: { width: 3, color: colors[0] },
+              itemStyle: { color: colors[0] },
+              data: MOCK_DATA.healthBloodPressure.systolic,
+            },
+            {
+              name: 'Diastolic (mmHg)',
+              type: 'line',
+              smooth: widget.isSmooth ?? true,
+              symbol: 'circle',
+              symbolSize: 6,
+              lineStyle: { width: 2.5, color: colors[1] || '#06b6d4' },
+              itemStyle: { color: colors[1] || '#06b6d4' },
+              data: MOCK_DATA.healthBloodPressure.diastolic,
+            },
+            {
+              name: 'Normal Systolic (<120)',
+              type: 'line',
+              symbol: 'none',
+              lineStyle: { width: 1.5, color: '#10b981', type: 'dashed' },
+              itemStyle: { color: '#10b981' },
+              data: MOCK_DATA.healthBloodPressure.targetSystolic,
+            },
+            {
+              name: 'Normal Diastolic (<80)',
+              type: 'line',
+              symbol: 'none',
+              lineStyle: { width: 1.5, color: '#34d399', type: 'dotted' },
+              itemStyle: { color: '#34d399' },
+              data: MOCK_DATA.healthBloodPressure.targetDiastolic,
+            },
+          ],
+        };
+      }
+
       return {
         backgroundColor: 'transparent',
         color: colors,
@@ -306,6 +472,64 @@ export const buildEChartsOption = (
     }
 
     case 'bar': {
+      const isHealthSteps =
+        widget.id.includes('step') ||
+        widget.targetMetricName?.toLowerCase().includes('step') ||
+        widget.title.toLowerCase().includes('step');
+
+      if (isHealthSteps && MOCK_DATA.healthSteps) {
+        return {
+          backgroundColor: 'transparent',
+          color: colors,
+          tooltip: {
+            ...baseTooltip,
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' },
+          },
+          legend: {
+            show: widget.showLegend !== false,
+            top: 0,
+            right: 10,
+            textStyle: { color: textSecondary, fontSize: 11 },
+          },
+          grid: baseGrid,
+          xAxis: {
+            type: 'category',
+            data: MOCK_DATA.healthSteps.days,
+            axisLine: { lineStyle: { color: gridLineColor } },
+            axisLabel: { color: textSecondary, fontSize: 11 },
+          },
+          yAxis: {
+            type: 'value',
+            name: 'Steps',
+            nameTextStyle: { color: textSecondary, fontSize: 10 },
+            splitLine: { lineStyle: { color: gridLineColor, type: 'dashed' } },
+            axisLabel: { color: textSecondary, fontSize: 11 },
+          },
+          series: [
+            {
+              name: 'Daily Step Count',
+              type: 'bar',
+              barMaxWidth: 28,
+              itemStyle: {
+                borderRadius: [5, 5, 0, 0],
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: colors[0] },
+                  { offset: 1, color: `${colors[0]}60` },
+                ]),
+              },
+              markLine: {
+                symbol: 'none',
+                data: [{ yAxis: 10000, name: '10k Goal' }],
+                lineStyle: { color: '#10b981', width: 2, type: 'dashed' },
+                label: { formatter: '10k Goal', color: textSecondary, fontSize: 10 },
+              },
+              data: MOCK_DATA.healthSteps.steps,
+            },
+          ],
+        };
+      }
+
       return {
         backgroundColor: 'transparent',
         color: colors,
@@ -668,18 +892,42 @@ export const buildEChartsOption = (
     }
 
     case 'radar': {
+      const isHealth =
+        widget.id.includes('health') ||
+        widget.id.includes('readiness') ||
+        widget.domain === 'healthcare';
+
       const isMedical =
         widget.id.includes('medical') ||
         widget.domain === 'medical-sre' ||
         widget.targetMetricName?.toLowerCase().includes('pillar');
 
       const indicators =
-        isMedical && MOCK_DATA.medicalSreRadar
+        isHealth && MOCK_DATA.healthRadar
+          ? MOCK_DATA.healthRadar.indicators
+          : isMedical && MOCK_DATA.medicalSreRadar
           ? MOCK_DATA.medicalSreRadar.indicators
           : MOCK_DATA.radar.indicators;
 
       const seriesData =
-        isMedical && MOCK_DATA.medicalSreRadar
+        isHealth && MOCK_DATA.healthRadar
+          ? [
+              {
+                value: MOCK_DATA.healthRadar.current,
+                name: 'Current Biometrics',
+                areaStyle: { color: `${colors[0]}45` },
+                lineStyle: { color: colors[0], width: 2.5 },
+                itemStyle: { color: colors[0] },
+              },
+              {
+                value: MOCK_DATA.healthRadar.target,
+                name: 'Target Readiness Baseline',
+                areaStyle: { color: `${colors[1] || '#10b981'}20` },
+                lineStyle: { color: colors[1] || '#10b981', type: 'dashed' as const, width: 2 },
+                itemStyle: { color: colors[1] || '#10b981' },
+              },
+            ]
+          : isMedical && MOCK_DATA.medicalSreRadar
           ? [
               {
                 value: MOCK_DATA.medicalSreRadar.current,
@@ -763,7 +1011,16 @@ export const buildEChartsOption = (
         widget.id.includes('intake') ||
         widget.domain === 'medical-sre' ||
         widget.targetMetricName?.includes('Voice');
-      const gaugeValue = isVoiceSla ? 100.0 : MOCK_DATA.gauge.value;
+      const isCalorieBurn =
+        widget.id.includes('calorie') ||
+        widget.targetMetricName?.toLowerCase().includes('calorie') ||
+        widget.title.toLowerCase().includes('calorie');
+
+      const gaugeMin = isCalorieBurn ? 0 : isVoiceSla ? 80 : 90;
+      const gaugeMax = isCalorieBurn ? 1000 : 100;
+      const gaugeValue = isCalorieBurn ? 845 : isVoiceSla ? 100.0 : MOCK_DATA.gauge.value;
+      const gaugeDetailFormatter = isCalorieBurn ? '{value} kcal' : isVoiceSla ? '{value}% SLA' : '{value}%';
+      const gaugeLabelFormatter = isCalorieBurn ? '{value}' : '{value}%';
 
       return {
         backgroundColor: 'transparent',
@@ -774,8 +1031,8 @@ export const buildEChartsOption = (
             radius: '85%',
             startAngle: 200,
             endAngle: -20,
-            min: isVoiceSla ? 80 : 90,
-            max: 100,
+            min: gaugeMin,
+            max: gaugeMax,
             splitNumber: 5,
             itemStyle: {
               color: colors[0],
@@ -816,7 +1073,7 @@ export const buildEChartsOption = (
               distance: -14,
               color: textSecondary,
               fontSize: 10,
-              formatter: '{value}%',
+              formatter: gaugeLabelFormatter,
             },
             anchor: {
               show: true,
@@ -838,7 +1095,7 @@ export const buildEChartsOption = (
               offsetCenter: [0, '35%'],
               fontSize: 22,
               fontWeight: 'bolder',
-              formatter: isVoiceSla ? '{value}% SLA' : '{value}%',
+              formatter: gaugeDetailFormatter,
               color: textPrimary,
             },
             data: [

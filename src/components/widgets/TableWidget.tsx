@@ -14,7 +14,15 @@ export const TableWidget = ({ widget, theme }: TableWidgetProps) => {
     widget?.id.includes('synth') ||
     widget?.targetMetricName?.toLowerCase().includes('probe');
 
-  const rows = isMedical && MOCK_DATA.medicalTableRows
+  const isHealth =
+    widget?.domain === 'healthcare' ||
+    widget?.id.includes('health') ||
+    widget?.id.includes('workout') ||
+    widget?.id.includes('fitness');
+
+  const rows = isHealth && MOCK_DATA.healthTableRows
+    ? MOCK_DATA.healthTableRows
+    : isMedical && MOCK_DATA.medicalTableRows
     ? MOCK_DATA.medicalTableRows
     : MOCK_DATA.tableRows;
 
@@ -47,21 +55,21 @@ export const TableWidget = ({ widget, theme }: TableWidgetProps) => {
             >
               <th className="py-2.5 px-3 font-semibold">
                 <div className="flex items-center gap-1 cursor-pointer">
-                  <span>{isMedical ? 'Probe ID' : 'Record ID'}</span>
+                  <span>{isHealth ? 'Entry ID' : isMedical ? 'Probe ID' : 'Record ID'}</span>
                   <ArrowUpDown size={11} />
                 </div>
               </th>
               <th className="py-2.5 px-3 font-semibold">
-                {isMedical ? 'Synthetic Check / Target' : 'Account / Target'}
+                {isHealth ? 'Activity / Biometric Target' : isMedical ? 'Synthetic Check / Target' : 'Account / Target'}
               </th>
               <th className="py-2.5 px-3 font-semibold">
-                {isMedical ? 'Alias / Protocol Details' : 'Category'}
+                {isHealth ? 'Source / Device / Protocol' : isMedical ? 'Alias / Protocol Details' : 'Category'}
               </th>
               <th className="py-2.5 px-3 font-semibold text-right">
-                {isMedical ? 'Measured SLI (SLO)' : 'Value ($)'}
+                {isHealth ? 'Recorded Measurement' : isMedical ? 'Measured SLI (SLO)' : 'Value ($)'}
               </th>
-              <th className="py-2.5 px-3 font-semibold text-center">Health Status</th>
-              <th className="py-2.5 px-3 font-semibold text-right">Last Verified</th>
+              <th className="py-2.5 px-3 font-semibold text-center">Status</th>
+              <th className="py-2.5 px-3 font-semibold text-right">{isHealth ? 'Timestamp' : 'Last Verified'}</th>
             </tr>
           </thead>
           <tbody className="divide-y" style={{ borderColor: theme.gridLineColor }}>

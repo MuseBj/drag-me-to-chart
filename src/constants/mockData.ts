@@ -44,6 +44,37 @@ export interface MockDataSets {
     tracks: string[];
     events: [number, number, string, string, string][]; // [dayIndex, trackIndex, title, details, colorType]
   };
+  healthWeightBodyFat?: {
+    weeks: string[];
+    weight: number[];
+    bodyFat: number[];
+  };
+  healthSteps?: {
+    days: string[];
+    steps: number[];
+    target: number[];
+  };
+  healthBloodPressure?: {
+    days: string[];
+    systolic: number[];
+    diastolic: number[];
+    targetSystolic: number[];
+    targetDiastolic: number[];
+  };
+  healthWorkoutSplit?: { name: string; value: number }[];
+  healthRadar?: {
+    indicators: { name: string; max: number }[];
+    current: number[];
+    target: number[];
+  };
+  healthTableRows?: {
+    id: string;
+    target: string;
+    category: string;
+    value: string;
+    status: 'Healthy' | 'Warning' | 'Critical' | 'Completed';
+    updated: string;
+  }[];
 }
 
 // Generates weekly 24h heatmap data
@@ -347,4 +378,89 @@ export const MOCK_DATA: MockDataSets = {
       [6, 2, 'Host 3 Routine Event', 'Weekly health check & telemetry roll-up', 'host'],
     ],
   },
+  healthWeightBodyFat: {
+    weeks: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'],
+    weight: [184.2, 183.1, 182.0, 180.8, 179.6, 178.5, 177.4, 176.4],
+    bodyFat: [21.4, 21.0, 20.5, 20.0, 19.5, 19.1, 18.7, 18.3],
+  },
+  healthSteps: {
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    steps: [8420, 10350, 11400, 9680, 12850, 14200, 10890],
+    target: [10000, 10000, 10000, 10000, 10000, 10000, 10000],
+  },
+  healthBloodPressure: {
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    systolic: [122, 118, 120, 124, 117, 119, 118],
+    diastolic: [79, 76, 78, 80, 75, 77, 76],
+    targetSystolic: [120, 120, 120, 120, 120, 120, 120],
+    targetDiastolic: [80, 80, 80, 80, 80, 80, 80],
+  },
+  healthWorkoutSplit: [
+    { name: 'Hypertrophy & Strength', value: 45 },
+    { name: 'Zone 2 Cardio', value: 25 },
+    { name: 'HIIT & Conditioning', value: 15 },
+    { name: 'Mobility & Recovery', value: 15 },
+  ],
+  healthRadar: {
+    indicators: [
+      { name: 'Sleep Architecture', max: 100 },
+      { name: 'Daily Step Volume', max: 100 },
+      { name: 'Cardio VO2 Max', max: 100 },
+      { name: 'Strength Volume', max: 100 },
+      { name: 'Hydration Target', max: 100 },
+      { name: 'HRV & Recovery', max: 100 },
+    ],
+    current: [88, 95, 78, 86, 92, 84],
+    target: [85, 90, 80, 80, 85, 80],
+  },
+  healthTableRows: [
+    {
+      id: 'LOG-1042',
+      target: 'Morning Scale & Bioimpedance',
+      category: 'Smart Scale Sync',
+      value: '176.4 lbs (18.3% BF)',
+      status: 'Healthy',
+      updated: '7:15 AM Today',
+    },
+    {
+      id: 'LOG-1041',
+      target: 'Omron BP Resting Cuff',
+      category: 'Cardiovascular Rest',
+      value: '118 / 76 mmHg (58 bpm)',
+      status: 'Healthy',
+      updated: '7:20 AM Today',
+    },
+    {
+      id: 'LOG-1040',
+      target: 'Legs & Core Hypertrophy Session',
+      category: 'Strength Workout (65m)',
+      value: '18,450 lbs Volume',
+      status: 'Completed',
+      updated: 'Yesterday 6:00 PM',
+    },
+    {
+      id: 'LOG-1039',
+      target: 'Zone 2 Steady-State Cardio',
+      category: 'Incline Treadmill (45m)',
+      value: '412 kcal (132 avg HR)',
+      status: 'Completed',
+      updated: 'Yesterday 7:15 AM',
+    },
+    {
+      id: 'LOG-1038',
+      target: 'Daily Step Accumulation',
+      category: 'Apple Health / Garmin',
+      value: '11,420 / 10,000 Steps',
+      status: 'Completed',
+      updated: 'Yesterday',
+    },
+    {
+      id: 'LOG-1037',
+      target: 'Nightly Sleep & HRV Recovery',
+      category: 'Oura Sleep Architecture',
+      value: '7h 48m (HRV 62ms)',
+      status: 'Healthy',
+      updated: '6:30 AM Today',
+    },
+  ],
 };
