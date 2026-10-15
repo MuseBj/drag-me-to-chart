@@ -443,7 +443,7 @@ export const PRESET_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'health-workout-tracker',
     title: 'Health & Workout Performance Studio',
     description: 'Biometric telemetry tracking weight progression, daily step volume, body fat percentage, resting blood pressure, and workout volume splits',
-    themeId: 'emerald-matrix',
+    themeId: 'psychasec-datastack',
     domain: 'healthcare',
     columns: 12,
     updatedAt: new Date().toISOString(),
